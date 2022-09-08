@@ -1,4 +1,5 @@
 import {check, validationResult} from 'express-validator'
+import bcrypt from 'bcrypt'
 import Usuario from "../models/Usuario.js"
 import { generarId } from '../helpers/token.js'
 import {emailRegistro,emailOlvidePassword} from '../helpers/emails.js'
@@ -161,17 +162,69 @@ const resetPassword = async (req, res)=> {
     res.render('templates/mensaje',
     {
         pagina:'Reestablece tu contraseña',
-        mensaje:'Hemos enviado un mail con las instrucciones'
+        mensaje:'Hemos enviado un mail con las instrucciones',
+        csrfToken: req.csrfToken()
     })
 }
 
-const comprobarToken = (req,res) => {
+const comprobarToken = async (req,res) => {
 
+    const {token} = req.params;
+
+    const usuario = await Usuario.findOne({where: {token}});
+
+    if(!usuario){
+        return res.render('auth/confirmarCuenta',{
+            pagina: 'Reestablece tu contraseña',
+            mensaje: 'Hubo un errror al validar tu información, vuelve a intentar',
+            error: true,
+        })
+    }
+
+    //Mostrar formulario para modificar la contraseña
+    res.render('auth/reset-password',{
+        pagina:'Reestablece tu contraseña',
+        csrfToken: req.csrfToken()
+    })
 }
 
-const nuevoPassword = (req,res)=>{
+const nuevoPassword = async (req,res)=>{
 
-}
+    const {password} = req.body
+    //Validar el password
+    await check('password').isLength({min:6}).withMessage('La contraseña debe ser de al menos 6 caracteres').run(req)
+    await check('repetir_password').equals(password).withMessage('Las contraseña no son iguales').run(req)
+
+    let resultado = validationResult(req)
+    //verificar si el resulta esta vacio
+
+    if(!resultado.isEmpty()){
+        //Errores
+        return res.render('auth/reset-password',{
+            pagina: 'Reestablecer tu contraseña',
+            csrfToken:req.csrfToken(),
+            errores: [{msg:'Las contraseñas deben ser iguales y de 6 caracteres o más'}]
+        })
+    }
+
+    const {token} = req.params;
+    
+    //Identificar quien hace el cambibo
+    const usuario = await Usuario.findOne({where:{token}})
+    
+    // Hashear el nuevo password
+    const salt = await bcrypt.genSalt(10);
+    usuario.password = await bcrypt.hash(password, salt);
+    usuario.token = null;
+
+    await usuario.save();
+
+    res.render('auth/confirmarCuenta',{
+        pagina:'Contraseña reestablecida',
+        mensaje: 'La contraseña se ha reestablecido correctamente',
+        csrfToken: req.csrfToken()
+    })
+}   
 
 export {
     formularioLogin,
