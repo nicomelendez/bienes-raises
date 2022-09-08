@@ -109,11 +109,51 @@ const confirmar = async(req,res) => {
 }
 
 
-//Crear la funcion para recuperar la contraseña
+
 const formularioOlvidePassword =  (req,res) => {
     res.render('auth/recuperar-password', {
-        pagina: 'Recupera tu acceso a Bienes Raices'
+        pagina: 'Recupera tu acceso a Bienes Raices',
+        csrfToken: req.csrfToken()
     })
+}
+
+const resetPassword = async (req, res)=> {
+
+    const {email} = req.body
+    //Validacion    
+    await check('email').isEmail().withMessage('El email no es valido').run(req)
+
+    let resultado = validationResult(req)
+
+    //verificar si el resulta esta vacio
+    if(!resultado.isEmpty()){
+        //Errores
+        return res.render('auth/recuperar-password',{
+            pagina: 'Recupera tu acceso a Bienes Raices',
+            csrfToken: req.csrfToken(),
+            errores: resultado.array()
+        })
+    }
+
+    //Buscar el usuario
+    const usuario = await Usuario.findOne({where:{email}});
+
+    if(!usuario){
+        return res.render('auth/recuperar-password',{
+            pagina: 'Recupera tu acceso a Bienes Raices',
+            csrfToken: req.csrfToken(),
+            errores: [{msg:'Error, el email no pertence a ningún usuario'}]
+        })
+    }
+
+    //Generar un token y enviar el email
+    usuario.token = generarId();
+    await usuario.save();
+
+    // Enviar un email
+
+    //Renderizar un mensaje para que cambie la contraseña
+
 }
 
 export {
@@ -121,5 +161,6 @@ export {
     formularioRegistro,
     formularioOlvidePassword,
     confirmar,
-    registrar
+    registrar,
+    resetPassword
 }
