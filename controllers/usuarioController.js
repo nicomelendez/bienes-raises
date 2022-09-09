@@ -29,14 +29,31 @@ const autenticar = async(req, res) => {
 
     if(!resultado.isEmpty()){
         //Errores
-        return res.render('auth/registro',{
-            pagina: 'Crear cuenta',
+        return res.render('auth/login',{
+            pagina: 'Iniciar sesión',
             csrfToken: req.csrfToken(),
             errores: resultado.array(),
-            usuario: {
-                nombre:nombre,
-                email:email
-            }
+        })
+    }
+
+    //Comprobar si el usuario existe
+    const {email, password} = req.body;
+
+    const usuario = await Usuario.findOne({where: {email}})
+    if(!usuario){
+        return res.render('auth/login',{
+            pagina: 'Iniciar sesión',
+            csrfToken: req.csrfToken(),
+            errores: [{msg:'El usuario no existe'}],
+        })
+    }
+
+    //Comprobar si el usuario esta confirmado
+    if(!usuario.confirmado){
+        return res.render('auth/login',{
+            pagina: 'Iniciar sesión',
+            csrfToken: req.csrfToken(),
+            errores: [{msg:'Tu cuenta no ha sido confirmada, revisa tu mail'}],
         })
     }
 }
