@@ -1,7 +1,8 @@
 import {check, validationResult} from 'express-validator'
+
 import bcrypt from 'bcrypt'
 import Usuario from "../models/Usuario.js"
-import { generarId } from '../helpers/token.js'
+import {generarJWT, generarId } from '../helpers/token.js'
 import {emailRegistro,emailOlvidePassword} from '../helpers/emails.js'
 
 const formularioLogin =  (req,res) => {
@@ -65,9 +66,18 @@ const autenticar = async(req, res) => {
             errores: [{msg:'La contraseña es incorrecta'}],
         })
     }
-
+    const {id, nombre} = usuario;
     //Autenticar un usuario
-    
+   const token = generarJWT({id: id, nombre:nombre});
+
+   //Almacenar en un cookie
+
+   return res.cookie('_token', token, {
+        httpOnly: true, //para que no nos roben datos desde la consola
+       /* secure: true, // para el ssl
+        sameSite:true // para el ssl */
+   }).redirect('/mis-propiedades')
+
 }
 
 
