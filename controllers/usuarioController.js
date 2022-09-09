@@ -6,7 +6,8 @@ import {emailRegistro,emailOlvidePassword} from '../helpers/emails.js'
 
 const formularioLogin =  (req,res) => {
         res.render('auth/login', {
-                pagina: 'Iniciar Sesión'
+                pagina: 'Iniciar Sesión',
+                csrfToken: req.csrfToken()
             })
 }
 
@@ -17,6 +18,29 @@ const formularioRegistro =  (req,res) => {
         csrfToken:req.csrfToken()
     })
 }
+
+const autenticar = async(req, res) => {
+    //Validacion
+    await check('email').isEmail().withMessage('El email no es valido').run(req)
+    await check('password').notEmpty().withMessage('La contraseña es obligatorio').run(req)
+
+    let resultado = validationResult(req)
+    //verificar si el resulta esta vacio
+
+    if(!resultado.isEmpty()){
+        //Errores
+        return res.render('auth/registro',{
+            pagina: 'Crear cuenta',
+            csrfToken: req.csrfToken(),
+            errores: resultado.array(),
+            usuario: {
+                nombre:nombre,
+                email:email
+            }
+        })
+    }
+}
+
 
 const registrar = async (req, res)=>{
 
@@ -229,6 +253,7 @@ const nuevoPassword = async (req,res)=>{
 export {
     formularioLogin,
     formularioRegistro,
+    autenticar,
     formularioOlvidePassword,
     confirmar,
     registrar,

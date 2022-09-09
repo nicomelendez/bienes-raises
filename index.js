@@ -8,6 +8,7 @@ import db from './config/db.js'
 const app =  express();
 
 //Habilitar lectura de datos de formulario
+app.use(express.urlencoded({extended:true}))
 
 //Habilitar cookie parser
 app.use( cookieParser() )
