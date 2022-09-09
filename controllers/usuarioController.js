@@ -5,9 +5,9 @@ import { generarId } from '../helpers/token.js'
 import {emailRegistro,emailOlvidePassword} from '../helpers/emails.js'
 
 const formularioLogin =  (req,res) => {
-    res.render('auth/login', {
-        pagina: 'Iniciar Sesión'
-    })
+        res.render('auth/login', {
+                pagina: 'Iniciar Sesión'
+            })
 }
 
 const formularioRegistro =  (req,res) => {
