@@ -37,7 +37,6 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.8",
-    "concurrently": "^7.4.0",
     "nodemon": "^2.0.19",
     "postcss": "^8.4.16",
     "postcss-cli": "^10.0.0",
