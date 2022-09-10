@@ -8,6 +8,14 @@ const admin = (req,res) => {
 
 }
 
+const crear = (req,res) => {
+    res.render('propiedades/crear',{
+        pagina: 'Crear propiedad',
+        barra:true
+    })
+}
+
 export {
-    admin
+    admin,
+    crear
 }
