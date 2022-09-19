@@ -28,13 +28,14 @@ const Propiedad = db.define('propiedades', {
         type:DataTypes.INTEGER,
         allowNull:false
     },
-    calle:{
-        taype:DataTypes.STRING(80),
-        allowNull:false
-    },
+    
     lat:{
         type:DataTypes.STRING,
         allowNull:false
+    },
+    calle:{
+        type: DataTypes.STRING(50),
+        allowNull: false
     },
     lng:{
         type:DataTypes.STRING,
