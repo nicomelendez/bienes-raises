@@ -1,5 +1,6 @@
 import Sequelize from "sequelize";
 import dotenv from 'dotenv'
+
 dotenv.config({path:'.env'})
 
 const db = new Sequelize(process.env.BD_NOMBRE, process.env.BD_USER, process.env.DB_PASSWORD,{
@@ -8,7 +9,6 @@ const db = new Sequelize(process.env.BD_NOMBRE, process.env.BD_USER, process.env
     dialect: 'mysql',
     define: {
         timestamps:true,
-
     },
     pool: {
         max:5,

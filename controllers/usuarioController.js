@@ -6,10 +6,12 @@ import {generarJWT, generarId } from '../helpers/token.js'
 import {emailRegistro,emailOlvidePassword} from '../helpers/emails.js'
 
 const formularioLogin =  (req,res) => {
+
         res.render('auth/login', {
                 pagina: 'Iniciar Sesión',
                 csrfToken: req.csrfToken()
             })
+            
 }
 
 const formularioRegistro =  (req,res) => {
@@ -41,6 +43,7 @@ const autenticar = async(req, res) => {
     const {email, password} = req.body;
 
     const usuario = await Usuario.findOne({where: {email}})
+
     if(!usuario){
         return res.render('auth/login',{
             pagina: 'Iniciar sesión',
@@ -66,6 +69,7 @@ const autenticar = async(req, res) => {
             errores: [{msg:'La contraseña es incorrecta'}],
         })
     }
+    
     const {id, nombre} = usuario;
     //Autenticar un usuario
    const token = generarJWT({id: id, nombre:nombre});
