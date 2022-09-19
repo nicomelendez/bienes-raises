@@ -1,3 +1,5 @@
+import Precio from "../models/Precio.js"
+import Categoria from "../models/Categoria.js"
 
 const admin = (req,res) => {
 
@@ -8,10 +10,20 @@ const admin = (req,res) => {
 
 }
 
-const crear = (req,res) => {
+//Formulario para crear una propiedad
+const crear = async(req,res) => {
+    //Consultar Modelo de Precio y categorias
+    const [categorias, precios] = await Promise.all([
+        Categoria.findAll(),
+        Precio.findAll()
+    ])
+
+
     res.render('propiedades/crear',{
         pagina: 'Crear propiedad',
-        barra:true
+        barra:true,
+        categorias,
+        precios
     })
 }
 
