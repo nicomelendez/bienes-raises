@@ -78,6 +78,7 @@ const autenticar = async(req, res) => {
 
    return res.cookie('_token', token, {
         httpOnly: true, //para que no nos roben datos desde la consola
+
        /* secure: true, // para el ssl
         sameSite:true // para el ssl */
    }).redirect('/mis-propiedades')

@@ -1,7 +1,7 @@
 (function() {
 
-    const lat = -34.37589;
-    const lng = -55.23771;
+    const lat = document.querySelector('#lat').value || -34.37589;
+    const lng = document.querySelector('#lng').value || -55.23771;
     const mapa = L.map('mapa').setView([lat, lng ], 16);
     let marker;
     
@@ -34,8 +34,7 @@
 
             marker.bindPopup(resultado.address.LongLabel)
             console.log("🚀 ~ file: mapa.js ~ line 36 ~ geocodeService.reverse ~ resultado", resultado)
-
-            // Llenar los campos
+            
             document.querySelector('.calle').textContent = `Calle: ${resultado?.address?.Address ?? ''}`;
             document.querySelector('#calle').value = resultado?.address?.Address ?? '';
             document.querySelector('#lat').value = resultado?.latlng?.lat ?? '';
